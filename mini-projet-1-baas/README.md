@@ -72,11 +72,11 @@ C'est cette commande qui provisionne ta base de données. Tu ne touches à rien 
 Les nouveaux projets Google Cloud n'accordent pas automatiquement toutes les permissions nécessaires. Lance ces deux commandes en remplaçant `PROJET_ID` et `NUMERO_PROJET` par tes valeurs (visibles dans la console Cloud) :
 
 ```bash
-gcloud projects add-iam-policy-binding PROJET_ID --member="serviceAccount:NUMERO_PROJET-compute@developer.gserviceaccount.com" --role="roles/cloudbuild.builds.builder"
+gcloud projects add-iam-policy-binding projet-1-494007 --member="serviceAccount:49114215558-compute@developer.gserviceaccount.com" --role="roles/cloudbuild.builds.builder"
 ```
 
 ```bash
-gcloud projects add-iam-policy-binding PROJET_ID --member="serviceAccount:NUMERO_PROJET-compute@developer.gserviceaccount.com" --role="roles/storage.objectAdmin"
+gcloud projects add-iam-policy-binding projet-1-494007 --member="serviceAccount:49114215558-compute@developer.gserviceaccount.com" --role="roles/storage.objectAdmin"
 ```
 
 ### Étape 7 — Déployer l'application
