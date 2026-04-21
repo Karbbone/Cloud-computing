@@ -25,41 +25,39 @@ GET https://URL_FONCTION?name=Clement
 
 ---
 
-## Déploiement (depuis Google Cloud Console → Cloud Shell)
+## Déploiement (via Google Cloud Console + GitHub)
 
-### Étape 1 — Récupérer le code
+### Étape 1 — Ouvrir Cloud Run
 
-```bash
-git clone https://github.com/Karbbone/Cloud-computing.git
-cd Cloud-computing
-git checkout p2
-cd mini-projet-2-faas
-```
+Va sur [console.cloud.google.com](https://console.cloud.google.com), recherche **Cloud Run** et ouvre le service.
 
-### Étape 2 — Activer l'API Cloud Functions
+### Étape 2 — Créer une fonction
 
-```bash
-gcloud services enable cloudfunctions.googleapis.com cloudbuild.googleapis.com
-```
+Clique sur **Écrire une fonction**.
 
-### Étape 3 — Déployer la fonction
+### Étape 3 — Connecter GitHub
 
-```bash
-gcloud functions deploy helloWorld --runtime nodejs20 --trigger-http --allow-unauthenticated --region europe-west1
-```
+Sélectionne **GitHub** comme source, puis connecte ton compte GitHub et choisis :
 
-Le déploiement prend environ 1 minute. L'URL est affichée à la fin :
+- **Repository** : `Karbbone/Cloud-computing`
+- **Branch** : `p2`
+- **Répertoire de contexte** : `/mini-projet-2-faas`
+- **Cible de la fonction** : `helloWorld`
 
-```
-https://europe-west1-projet-1-494007.cloudfunctions.net/helloWorld
-```
+### Étape 4 — Configurer l'accès
 
-### Étape 4 — Tester
+Dans la section **Authentification**, sélectionne **Autoriser l'accès public**.
+
+### Étape 5 — Déployer
+
+Clique **Déployer**. Le déploiement prend environ 1 minute. L'URL est affichée à la fin.
+
+### Étape 6 — Tester
 
 Ouvre l'URL dans le navigateur, ou avec un paramètre :
 
 ```
-https://europe-west1-projet-1-494007.cloudfunctions.net/helloWorld?name=Clement
+https://TON_URL?name=Clement
 ```
 
 ---
