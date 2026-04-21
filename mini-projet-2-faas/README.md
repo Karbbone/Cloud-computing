@@ -57,8 +57,10 @@ Clique **Déployer**. Le déploiement prend environ 1 minute. L'URL est affiché
 Ouvre l'URL dans le navigateur, ou avec un paramètre :
 
 ```
-https://TON_URL?name=Clement
+https://p2-49114215558.europe-west1.run.app/?name=Clement
 ```
+
+**Application déployée :** https://p2-49114215558.europe-west1.run.app
 
 ---
 
