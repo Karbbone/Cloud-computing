@@ -7,7 +7,10 @@ const db = new Firestore();
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-  const snapshot = await db.collection("messages").orderBy("date", "desc").get();
+  const snapshot = await db
+    .collection("messages")
+    .orderBy("date", "desc")
+    .get();
   const messages = snapshot.docs.map((d) => d.data().texte);
 
   res.send(`
@@ -21,7 +24,9 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/add", async (req, res) => {
-  await db.collection("messages").add({ texte: req.body.texte, date: new Date() });
+  await db
+    .collection("messages")
+    .add({ texte: req.body.texte, date: new Date() });
   res.redirect("/");
 });
 
