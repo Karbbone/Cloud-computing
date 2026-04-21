@@ -33,7 +33,7 @@ Va sur [console.cloud.google.com](https://console.cloud.google.com), recherche *
 
 ### Étape 2 — Créer une fonction
 
-Clique sur **Écrire une fonction**.
+Clique sur **Écrire une fonction**, puis sélectionne **Node.js**.
 
 ### Étape 3 — Connecter GitHub
 
