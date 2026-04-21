@@ -67,15 +67,26 @@ gcloud firestore databases create --location=europe-west1
 
 C'est cette commande qui provisionne ta base de données. Tu ne touches à rien d'autre — c'est le principe du BaaS.
 
-### Étape 6 — Déployer l'application
+### Étape 6 — Corriger les permissions IAM
+
+Les nouveaux projets Google Cloud n'accordent pas automatiquement toutes les permissions nécessaires. Lance ces deux commandes en remplaçant `PROJET_ID` et `NUMERO_PROJET` par tes valeurs (visibles dans la console Cloud) :
+
+```bash
+gcloud projects add-iam-policy-binding PROJET_ID --member="serviceAccount:NUMERO_PROJET-compute@developer.gserviceaccount.com" --role="roles/cloudbuild.builds.builder"
+```
+
+```bash
+gcloud projects add-iam-policy-binding PROJET_ID --member="serviceAccount:NUMERO_PROJET-compute@developer.gserviceaccount.com" --role="roles/storage.objectAdmin"
+```
+
+### Étape 7 — Déployer l'application
 
 ```bash
 gcloud services enable run.googleapis.com
+```
 
-gcloud run deploy livre-dor \
-  --source . \
-  --region europe-west1 \
-  --allow-unauthenticated
+```bash
+gcloud run deploy livre-dor --source . --region europe-west1 --allow-unauthenticated
 ```
 
 - `--source .` : Google Cloud détecte automatiquement que c'est du Node.js et construit l'image
