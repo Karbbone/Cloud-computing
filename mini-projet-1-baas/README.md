@@ -5,6 +5,7 @@
 **Backend as a Service (BaaS)** = tu utilises un backend tout fait, hébergé et géré par un tiers.
 
 Sans BaaS, pour stocker des données tu dois :
+
 - louer un serveur
 - installer une base de données
 - la configurer, la sécuriser, la maintenir
@@ -18,6 +19,7 @@ Dans ce projet, le BaaS c'est **Firestore** : une base de données NoSQL entièr
 ## Ce que fait l'application
 
 Un livre d'or minimaliste :
+
 - un formulaire pour écrire un message
 - les messages sont sauvegardés dans Firestore (BaaS)
 - la liste s'affiche à chaque visite
@@ -55,8 +57,9 @@ Un terminal s'ouvre directement dans le navigateur. Tu n'as rien à installer su
 Dans Cloud Shell, clone le repo :
 
 ```bash
-git clone https://github.com/TON_PSEUDO/TON_REPO.git
-cd TON_REPO/mini-projet-1-baas
+git clone https://github.com/Karbbone/Cloud-computing.git
+git checkout p1
+cd Cloud/mini-projet-1-baas
 ```
 
 ### Étape 5 — Créer la base de données Firestore
@@ -93,21 +96,24 @@ gcloud run deploy livre-dor --source . --region europe-west1 --allow-unauthentic
 - `--allow-unauthenticated` : l'app est accessible publiquement
 
 Le déploiement prend environ 2 minutes. À la fin, tu obtiens une URL du type :
+
 ```
 https://livre-dor-xxxxxxxxxx-ew.a.run.app
 ```
 
 Ouvre cette URL dans ton navigateur : l'application est en ligne.
 
+**Application déployée :** https://livre-dor-49114215558.europe-west1.run.app
+
 ---
 
 ## Pourquoi c'est du BaaS ?
 
-| Ce que tu gères | Ce que Google gère |
-|---|---|
-| Le code de l'app (30 lignes) | La base de données Firestore |
-| | Les serveurs, la RAM, le stockage |
-| | La scalabilité et la disponibilité |
-| | Les sauvegardes |
+| Ce que tu gères              | Ce que Google gère                 |
+| ---------------------------- | ---------------------------------- |
+| Le code de l'app (30 lignes) | La base de données Firestore       |
+|                              | Les serveurs, la RAM, le stockage  |
+|                              | La scalabilité et la disponibilité |
+|                              | Les sauvegardes                    |
 
 Tu n'as configuré aucun serveur de base de données. Tu as juste appelé `gcloud firestore databases create` et Firestore existait. C'est ça, le BaaS.
