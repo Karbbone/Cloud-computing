@@ -62,7 +62,7 @@ cd TON_REPO/mini-projet-1-baas
 ### Étape 5 — Créer la base de données Firestore
 
 ```bash
-gcloud firestore databases create --region=europe-west1
+gcloud firestore databases create --location=europe-west1
 ```
 
 C'est cette commande qui provisionne ta base de données. Tu ne touches à rien d'autre — c'est le principe du BaaS.
