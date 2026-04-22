@@ -4,10 +4,19 @@ const fs = require("fs");
 
 const app = express();
 const storage = new Storage();
-const BUCKET = process.env.BUCKET_NAME;
+const BUCKET = process.env.BUCKET_NAME || `benchmark-${process.env.GOOGLE_CLOUD_PROJECT || "local"}`;
 const BLOCK_PATH = "/tmp/benchmark.txt";
 
 app.use(express.urlencoded({ extended: true }));
+
+async function ensureBucket() {
+  const bucket = storage.bucket(BUCKET);
+  const [exists] = await bucket.exists();
+  if (!exists) {
+    await bucket.create({ location: "europe-west1" });
+    console.log(`Bucket ${BUCKET} créé`);
+  }
+}
 
 app.get("/", (req, res) => {
   res.send(`
@@ -39,20 +48,15 @@ app.post("/benchmark", async (req, res) => {
   const blockRead = Date.now() - t2;
 
   // --- Object storage (Google Cloud Storage) ---
-  let objectWrite = "N/A";
-  let objectRead = "N/A";
+  const file = storage.bucket(BUCKET).file("benchmark.txt");
 
-  if (BUCKET) {
-    const file = storage.bucket(BUCKET).file("benchmark.txt");
+  const t3 = Date.now();
+  await file.save(data);
+  const objectWrite = Date.now() - t3;
 
-    const t3 = Date.now();
-    await file.save(data);
-    objectWrite = Date.now() - t3;
-
-    const t4 = Date.now();
-    await file.download();
-    objectRead = Date.now() - t4;
-  }
+  const t4 = Date.now();
+  await file.download();
+  const objectRead = Date.now() - t4;
 
   res.send(`
     <h1>Résultats – ${ko} Ko</h1>
@@ -69,4 +73,7 @@ app.post("/benchmark", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+app.listen(PORT, async () => {
+  await ensureBucket();
+  console.log(`Listening on port ${PORT}`);
+});

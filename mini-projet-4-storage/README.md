@@ -29,37 +29,34 @@ Une interface web simple qui :
 
 ## Déploiement
 
-### Étape 1 — Créer un bucket GCS
+Une seule commande, comme le projet p1. Le bucket GCS est créé automatiquement par l'application au démarrage.
 
-Dans Cloud Shell ou en local :
-
-```bash
-gsutil mb -l europe-west1 gs://mon-bucket-p4-[TON-ID-PROJET]
-```
-
-### Étape 2 — Déployer sur Cloud Run
+### Étape 1 — Déployer sur Cloud Run
 
 ```bash
 gcloud run deploy storage-benchmark \
   --source ./mini-projet-4-storage \
   --region europe-west1 \
-  --allow-unauthenticated \
-  --set-env-vars BUCKET_NAME=mon-bucket-p4-[TON-ID-PROJET]
+  --allow-unauthenticated
 ```
 
-### Étape 3 — Donner accès à GCS depuis Cloud Run
+Cloud Run détecte automatiquement le projet GCP courant via la variable `GOOGLE_CLOUD_PROJECT` et nomme le bucket `benchmark-[ID-PROJET]`.
 
-Cloud Run utilise un compte de service. Il faut lui donner le droit d'écrire dans le bucket :
+### Étape 2 — Donner les droits Storage au compte de service Cloud Run
+
+Par défaut, le compte de service Cloud Run n'a pas le droit de créer des buckets. On lui accorde le rôle Storage Admin :
 
 ```bash
-# Récupérer l'email du compte de service Cloud Run
-gcloud run services describe storage-benchmark \
-  --region europe-west1 \
-  --format="value(spec.template.spec.serviceAccountName)"
+# Récupérer l'email du compte de service
+PROJECT_ID=$(gcloud config get-value project)
+PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 
-# Lui donner accès au bucket
-gsutil iam ch serviceAccount:[EMAIL]:objectAdmin gs://mon-bucket-p4-[TON-ID-PROJET]
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+  --role="roles/storage.admin"
 ```
+
+C'est la seule étape manuelle. Ensuite le bucket est créé et géré par l'app.
 
 ---
 
