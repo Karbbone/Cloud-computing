@@ -42,7 +42,7 @@ Dans l'onglet **Objets**, clique **Charger des fichiers** et dépose n'importe q
 
 Le fichier est maintenant accessible publiquement via :
 
-```
+```text
 https://storage.googleapis.com/bucket-non-securise-p5/[nom-du-fichier]
 ```
 
