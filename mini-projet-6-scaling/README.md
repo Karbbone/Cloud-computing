@@ -8,10 +8,10 @@ Quand 1 utilisateur se connecte, une petite machine suffit. Quand 10 000 utilisa
 
 Il existe deux façons de scaler :
 
-| Type | Principe | Image |
-| --- | --- | --- |
-| **Scaling vertical** | On donne **plus de puissance** à la même machine (plus de CPU/RAM) | Acheter un camion plus gros |
-| **Scaling horizontal** | On **ajoute des machines** identiques et on répartit la charge | Mettre plusieurs camions sur la route |
+| Type                   | Principe                                                           | Image                                 |
+| ---------------------- | ------------------------------------------------------------------ | ------------------------------------- |
+| **Scaling vertical**   | On donne **plus de puissance** à la même machine (plus de CPU/RAM) | Acheter un camion plus gros           |
+| **Scaling horizontal** | On **ajoute des machines** identiques et on répartit la charge     | Mettre plusieurs camions sur la route |
 
 Le scaling horizontal est la base du Cloud : il est quasi illimité et automatique.
 
@@ -33,10 +33,10 @@ C'est l'**autoscaling** : on ne gère aucun serveur, on configure juste des règ
 
 Une petite API Node.js (Express) avec 3 routes :
 
-| Route | Rôle |
-| --- | --- |
-| `/` | Page d'accueil + liens |
-| `/info` | Affiche l'**ID unique de l'instance** qui répond |
+| Route          | Rôle                                                           |
+| -------------- | -------------------------------------------------------------- |
+| `/`            | Page d'accueil + liens                                         |
+| `/info`        | Affiche l'**ID unique de l'instance** qui répond               |
 | `/load?ms=200` | Occupe le **CPU pendant 200 ms** (sert à simuler de la charge) |
 
 Chaque instance génère un ID aléatoire à son démarrage. En envoyant beaucoup de requêtes `/load` en parallèle, Cloud Run crée plusieurs instances : les réponses affichent alors **des IDs différents** → on voit le scaling horizontal en direct.
@@ -134,12 +134,12 @@ Cette dernière commande affiche **combien de réponses sont venues de chaque in
 
 ## Ce qu'on observe
 
-| Phase | Trafic | Instances | Coût |
-| --- | --- | --- | --- |
-| Repos | 0 req | 0 (ou 1 si min=1) | ~0 |
-| Charge légère | quelques req | 1–2 | faible |
-| Pic (`hey -c 100`) | 100 req/s | 5–10 | modéré, le temps du pic |
-| Après le pic | 0 req | retombe à 0 | ~0 |
+| Phase              | Trafic       | Instances         | Coût                    |
+| ------------------ | ------------ | ----------------- | ----------------------- |
+| Repos              | 0 req        | 0 (ou 1 si min=1) | ~0                      |
+| Charge légère      | quelques req | 1–2               | faible                  |
+| Pic (`hey -c 100`) | 100 req/s    | 5–10              | modéré, le temps du pic |
+| Après le pic       | 0 req        | retombe à 0       | ~0                      |
 
 **Conclusion** : sans toucher au code ni gérer de serveur, l'application a absorbé un pic de charge en multipliant ses instances, puis a libéré les ressources automatiquement. C'est tout l'intérêt du scaling horizontal managé.
 
@@ -161,7 +161,3 @@ gcloud run services delete scaling-demo --region europe-west1
 ```
 
 ---
-
-## Lien application déployée
-
-> [À compléter après déploiement](https://p6-49114215558.europe-west1.run.app/)
