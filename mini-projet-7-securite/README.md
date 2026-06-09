@@ -7,6 +7,7 @@ On reprend l'application du **mini projet 4** (`storage-benchmark`) : une API No
 L'objectif : montrer comment configurer une application sécurisée selon 4 axes, puis mettre en place une **sauvegarde/restauration automatique** et rédiger un **Plan de Reprise d'Activité (PRA)**.
 
 > Variables utilisées dans les commandes :
+>
 > ```bash
 > PROJECT_ID=$(gcloud config get-value project)
 > PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
@@ -45,10 +46,10 @@ gcloud run services update $SERVICE \
   --service-account $SA
 ```
 
-| Avant | Après |
-| --- | --- |
+| Avant                                               | Après                                              |
+| --------------------------------------------------- | -------------------------------------------------- |
 | Compte par défaut, rôle `Editor` sur tout le projet | Compte dédié, `objectAdmin` sur **un seul bucket** |
-| Une faille = tout le projet compromis | Une faille = limitée à ce bucket |
+| Une faille = tout le projet compromis               | Une faille = limitée à ce bucket                   |
 
 **Bonnes pratiques appliquées :** rôle au niveau ressource (bucket) et non projet, pas de clé JSON exportée (Cloud Run utilise l'identité managée), révocation simple.
 
@@ -105,11 +106,11 @@ gcloud run services update $SERVICE \
   --ingress internal-and-cloud-load-balancing
 ```
 
-| Valeur d'ingress | Surface exposée |
-| --- | --- |
-| `all` (défaut) | Tout internet peut appeler l'URL |
+| Valeur d'ingress                    | Surface exposée                                        |
+| ----------------------------------- | ------------------------------------------------------ |
+| `all` (défaut)                      | Tout internet peut appeler l'URL                       |
 | `internal-and-cloud-load-balancing` | Seulement le VPC + un load balancer (où on met le WAF) |
-| `internal` | Seulement le réseau interne |
+| `internal`                          | Seulement le réseau interne                            |
 
 ### Pare-feu applicatif (WAF) avec Cloud Armor
 
@@ -166,7 +167,7 @@ Cloud Run expose nativement (onglet **Métriques** du service) : nombre de requ�
 # (créée dans Cloud Monitoring → Alerting → Create Policy)
 ```
 
-On configure dans **Cloud Monitoring → Alerting** une politique : *« si le taux de 5xx > 5 % pendant 5 min → email/Slack »*.
+On configure dans **Cloud Monitoring → Alerting** une politique : _« si le taux de 5xx > 5 % pendant 5 min → email/Slack »_.
 
 ### Dashboard
 
@@ -206,7 +207,7 @@ gcloud scheduler jobs create http daily-backup \
   --oauth-service-account-email $SA
 ```
 
-> En pratique simple, on peut aussi utiliser **Storage Transfer Service** (console : *Transfert* → *Créer un job de transfert* → planifié quotidien, source = bucket data, destination = bucket backup).
+> En pratique simple, on peut aussi utiliser **Storage Transfer Service** (console : _Transfert_ → _Créer un job de transfert_ → planifié quotidien, source = bucket data, destination = bucket backup).
 
 ### Restauration
 
@@ -226,19 +227,19 @@ Le **PRA** décrit comment redémarrer le service après un incident majeur (per
 
 ### Objectifs
 
-| Indicateur | Définition | Cible fixée |
-| --- | --- | --- |
+| Indicateur                         | Définition                                  | Cible fixée                                             |
+| ---------------------------------- | ------------------------------------------- | ------------------------------------------------------- |
 | **RPO** (Recovery Point Objective) | Quantité de données qu'on accepte de perdre | ≤ 24 h (backup quotidien) + versioning quasi temps réel |
-| **RTO** (Recovery Time Objective) | Temps max pour remettre le service en ligne | ≤ 1 h |
+| **RTO** (Recovery Time Objective)  | Temps max pour remettre le service en ligne | ≤ 1 h                                                   |
 
 ### Scénarios couverts
 
-| Incident | Réponse |
-| --- | --- |
-| **Suppression accidentelle d'un fichier** | Restauration via versioning (`gcloud storage cp ...#GENERATION`) — quelques minutes |
-| **Corruption / suppression du bucket** | Restauration depuis le bucket de backup (autre région) via `rsync` |
+| Incident                                       | Réponse                                                                                                                   |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Suppression accidentelle d'un fichier**      | Restauration via versioning (`gcloud storage cp ...#GENERATION`) — quelques minutes                                       |
+| **Corruption / suppression du bucket**         | Restauration depuis le bucket de backup (autre région) via `rsync`                                                        |
 | **Panne complète de la région `europe-west1`** | Redéploiement de Cloud Run en `europe-west4` (`gcloud run deploy --region europe-west4`) pointant sur le bucket de backup |
-| **Compromission (clé/accès)** | Révoquer la clé KMS (données illisibles), recréer le compte de service, restaurer depuis backup |
+| **Compromission (clé/accès)**                  | Révoquer la clé KMS (données illisibles), recréer le compte de service, restaurer depuis backup                           |
 
 ### Procédure de reprise (panne régionale)
 
@@ -261,13 +262,13 @@ Un PRA non testé ne vaut rien. **Tous les trimestres**, on simule la perte du b
 
 ## Tableau récapitulatif de la sécurisation
 
-| Axe | Avant (app brute) | Après (sécurisée) |
-| --- | --- | --- |
-| **IAM** | Compte par défaut, droits `Editor` | Compte dédié, `objectAdmin` sur 1 bucket |
-| **Chiffrement** | Clés Google par défaut | CMEK (clé KMS contrôlée) + TLS partout |
-| **Réseau** | Exposé à tout internet | Ingress restreint + Cloud Armor (WAF, anti-DDoS) |
-| **Monitoring** | Aucun | Logs, métriques, alertes, dashboard |
-| **Backup/PRA** | Aucun | Versioning + backup multi-région + PRA testé |
+| Axe             | Avant (app brute)                  | Après (sécurisée)                                |
+| --------------- | ---------------------------------- | ------------------------------------------------ |
+| **IAM**         | Compte par défaut, droits `Editor` | Compte dédié, `objectAdmin` sur 1 bucket         |
+| **Chiffrement** | Clés Google par défaut             | CMEK (clé KMS contrôlée) + TLS partout           |
+| **Réseau**      | Exposé à tout internet             | Ingress restreint + Cloud Armor (WAF, anti-DDoS) |
+| **Monitoring**  | Aucun                              | Logs, métriques, alertes, dashboard              |
+| **Backup/PRA**  | Aucun                              | Versioning + backup multi-région + PRA testé     |
 
 ---
 
@@ -281,7 +282,3 @@ gcloud iam service-accounts delete $SA
 ```
 
 ---
-
-## Lien application déployée
-
-> [À compléter après déploiement](https://p7-49114215558.europe-west1.run.app/)
