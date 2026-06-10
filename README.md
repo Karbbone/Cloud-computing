@@ -32,5 +32,6 @@ Sur GitHub, utilise le sélecteur de branche (en haut à gauche de la page du d�
 | [`terraform`](../../tree/terraform) | **Les 7 projets ci-dessus réécrits en Terraform**, un dossier `pN-terraform` par projet |
 
 Chaque approche est documentée dans le `README.md` de sa branche :
+
 - branches `p1`–`p7` → déploiement via **console GCP / `gcloud`** ;
 - branche `terraform` → déploiement via **Terraform** (`init` / `apply` / `destroy`).
