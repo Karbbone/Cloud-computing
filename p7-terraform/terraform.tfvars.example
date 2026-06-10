@@ -1,0 +1,5 @@
+project_id    = "mon-projet-gcp"
+region        = "europe-west1"
+backup_region = "europe-west4"
+image         = "europe-west1-docker.pkg.dev/mon-projet-gcp/apps/storage-benchmark:latest"
+alert_email   = "moi@example.com"

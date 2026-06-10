@@ -1,0 +1,3 @@
+project_id  = "mon-projet-gcp"
+region      = "europe-west1"
+bucket_name = "bucket-non-securise-p5-tf-UNIQUE"

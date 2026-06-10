@@ -1,0 +1,42 @@
+# Version CORRIGÉE du bucket (à comparer avec main.tf).
+# Renommer en secure.tf et retirer main.tf pour l'appliquer.
+
+resource "google_storage_bucket" "secure" {
+  name     = "bucket-securise-p5-tf"
+  location = "europe-west1"
+
+  # Correctif 4 : accès uniforme (pas d'ACL par objet)
+  uniform_bucket_level_access = true
+
+  # Correctif 2 : versioning activé (restauration possible)
+  versioning {
+    enabled = true
+  }
+
+  # Correctif 6 : cycle de vie (supprime les objets après 90 jours)
+  lifecycle_rule {
+    condition {
+      age = 90
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
+  # Correctif 3 : logging d'accès vers un bucket dédié
+  logging {
+    log_bucket = "mon-bucket-de-logs"
+  }
+
+  # Correctif 5 : chiffrement avec une clé CMEK gérée par nous
+  encryption {
+    default_kms_key_name = "projects/PROJET/locations/europe-west1/keyRings/kr/cryptoKeys/key"
+  }
+}
+
+# Correctif 1 : AUCUN allUsers. L'accès est restreint à des comptes précis.
+resource "google_storage_bucket_iam_member" "restricted" {
+  bucket = google_storage_bucket.secure.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:app-sa@PROJET.iam.gserviceaccount.com"
+}
